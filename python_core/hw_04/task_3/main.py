@@ -18,7 +18,7 @@ def main(path):
     else:
         print("Not such file or directory")
 
-user_path = Path(sys.argv[1])
+user_input_path = Path(sys.argv[1])
 
 if __name__ == "__main__":
-    main(user_path)
+    main(user_input_path)
