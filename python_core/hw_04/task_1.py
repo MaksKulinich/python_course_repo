@@ -17,6 +17,6 @@ def total_salary(path) -> tuple:
     if (average_salary%1) == 0:
         return general_salary, int(average_salary)
     else: 
-        return  general_salary, average_salary.__round__(3)
+        return  general_salary, average_salary.__round__(2)
     
 
