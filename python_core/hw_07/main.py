@@ -7,7 +7,7 @@ class Field:
         self.value = value
 
     def __str__(self):
-        return str(self.value)
+        return self
 
 class Name(Field):
      def __init__(self, name):
@@ -15,20 +15,24 @@ class Name(Field):
 
 class Phone(Field):
     def __init__(self, phone):
-        # super().__init__(phone)
         self.__phone = None
         self.phone = phone
         
+        
     @property
     def phone(self):
-        return self
+        return self.phone
     
     @phone.setter
-    def phone(self, valeu):
-        if len(valeu) == 10 and valeu.isdigit():
-            self.__phone = valeu
+    def phone(self, value):
+        if len(value) == 10 and value.isdigit():
+            super().__init__(str(value))
         else:
             raise ValueError("Phone must have 10 digits")
+
+
+    def __str__(self):
+        return self.value
 
 
 class Birthday(Field):
@@ -39,6 +43,9 @@ class Birthday(Field):
         except ValueError:
             raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
+    def __str__(self):
+        return self.value
+
 
 class Record:
     def __init__(self, name):
@@ -48,7 +55,8 @@ class Record:
 
 
     def add_phone(self, phone : Phone):
-        self.phones.append(Phone(phone))
+        if str(phone) not in self.phones:
+            self.phones.append(Phone(phone))
 
 
     def remove_phone(self, phone):
@@ -73,7 +81,7 @@ class Record:
 
 
     def __str__(self):
-        return f"Contact name: {self.name}, phones: {'; '.join(str(p) for p in self.phones)}"    
+        return f"Contact name: {self.name.value}, phones: {'; '.join(str(p) for p in self.phones)}, birthday: {str(self.birthday) if self.birthday else "not found"}"    
 
 
 class AddressBook(UserDict):
@@ -96,7 +104,8 @@ class AddressBook(UserDict):
         for record in self.data.values():
 
             if record.birthday:
-                birthday_date_this_year = record.birthday.value.replace(year = now_date.year)
+                datetime_birthday = datetime.strptime(str(record.birthday), "%d.%m.%Y").date()
+                birthday_date_this_year = datetime_birthday.replace(year = now_date.year)
 
                 if birthday_date_this_year < now_date:
                     birthday_date_this_year += timedelta(days=birthday_date_this_year.day + 1)
@@ -112,7 +121,7 @@ class AddressBook(UserDict):
                     final_congratulation_date = datetime.strftime(congratulation_date, "%Y.%m.%d")
 
                     congratulations_list.append({
-                        "name" : record["name"],
+                        "name" : record.name.value,
                         "congratulation_date" : final_congratulation_date
                     })
 
@@ -186,7 +195,7 @@ def return_all_phone(dictionary : AddressBook):
 
 @input_error
 def delete_user(dictionary : AddressBook, args):
-    name = args[0]
+    name, *_ = args
     del dictionary[name]
     return "User deleted"
 
@@ -199,11 +208,9 @@ def add_birthday(dictionary : AddressBook, args):
         try:
             birthday = Birthday(birthday_str)
             record.birthday = birthday
-            print("Birthday added.")
+            print("Birthday added")
         except ValueError as e:
                 print(e)
-        else:
-            print("Contact not found.")
 
 
 @input_error
@@ -217,11 +224,11 @@ def show_birthday(dictionary : AddressBook, args):
 
 
 @input_error
-def birthdays(dictionary : AddressBook, args = None):
+def birthdays(dictionary : AddressBook):
     upcoming_birthdays = dictionary.get_upcoming_birthdays()
     if upcoming_birthdays:
-        for entry in upcoming_birthdays:
-            print(f"{entry['name']} has a birthday on {entry['birthday_date']}")
+        for item in upcoming_birthdays:
+            print(f"{item['name']} has a birthday on {item["congratulation_date"]}")
     else:
         print("No upcoming birthdays.")
 
