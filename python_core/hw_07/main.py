@@ -82,7 +82,7 @@ class Record:
 
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(str(p) for p in self.phones)}, birthday: {str(self.birthday) if self.birthday else "not found"}"    
+        return f"Contact name: {self.name.value}, phones: {'; '.join(str(p) for p in self.phones)}, birthday: {str(self.birthday) if self.birthday else 'not found'}"    
 
 
 class AddressBook(UserDict):
