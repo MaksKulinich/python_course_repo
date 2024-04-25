@@ -229,7 +229,7 @@ def birthdays(dictionary : AddressBook):
     upcoming_birthdays = dictionary.get_upcoming_birthdays()
     if upcoming_birthdays:
         for item in upcoming_birthdays:
-            print(f"{item['name']} has a birthday on {item["congratulation_date"]}")
+            print(f"{item['name']} has a birthday on {item['congratulation_date']}")
     else:
         print("No upcoming birthdays.")
 
