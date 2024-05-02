@@ -1,0 +1,12 @@
+FROM python:3.12
+
+WORKDIR /task_2
+
+
+COPY . /task_2
+
+RUN pip install -r requirements.txt
+
+EXPOSE 5000
+
+CMD [ "python", "main.py" ]
